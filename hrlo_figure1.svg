@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="900" height="1060" viewBox="0 0 900 1060" xmlns="http://www.w3.org/2000/svg" font-family="Georgia, serif">
+  <defs>
+    <marker id="arr-dark"  markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#1F3864"/></marker>
+    <marker id="arr-blue"  markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#3A6BC4"/></marker>
+    <marker id="arr-green" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#2E8B57"/></marker>
+    <marker id="arr-red"   markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#C0392B"/></marker>
+    <marker id="arr-gray"  markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#888"/></marker>
+  </defs>
+
+  <rect width="900" height="1060" fill="#F7F9FC" rx="12"/>
+
+  <!-- Title -->
+  <text x="450" y="38" text-anchor="middle" font-size="16" font-weight="bold" fill="#1F3864">Figure 1: HRLO Inference Flow</text>
+  <text x="450" y="57" text-anchor="middle" font-size="11" fill="#555" font-style="italic">Top-down filtering cascade · rarity-biased scoring · veto feedback loop</text>
+
+  <!-- INPUT -->
+  <rect x="295" y="72" width="310" height="46" rx="8" fill="#1F3864"/>
+  <text x="450" y="92" text-anchor="middle" font-size="13" font-weight="bold" fill="white">Input Context</text>
+  <text x="450" y="109" text-anchor="middle" font-size="11" fill="#AAC4E8">h ∈ ℝᵈ  (final hidden state from M₀)</text>
+  <line x1="450" y1="118" x2="450" y2="146" stroke="#1F3864" stroke-width="2" marker-end="url(#arr-dark)"/>
+
+  <!-- TOP LAYER M_N -->
+  <rect x="185" y="146" width="530" height="92" rx="8" fill="#2E5090"/>
+  <text x="450" y="166" text-anchor="middle" font-size="13" font-weight="bold" fill="white">Top Layer M_N  —  Direction Key k</text>
+  <text x="450" y="183" text-anchor="middle" font-size="11" fill="#C8D8F8">score(t, k) = (1−λ)·sim(Eₜ, k)  +  λ·rare(t)</text>
+  <text x="450" y="198" text-anchor="middle" font-size="10" fill="#9ABCE8">sim uses M₀ embedding geometry  ·  rare uses C4 corpus freq  [see §3.5.1 for alignment caveat]</text>
+  <text x="450" y="212" text-anchor="middle" font-size="10" fill="#9ABCE8">rare(t) = 1 − log(freq(t)+ε)/log(freq_max+ε)   ·   λ=0.1 uniform across all layers [see §3.3]</text>
+  <!-- filter step label — explicit arrow target -->
+  <rect x="295" y="220" width="310" height="13" rx="3" fill="#1A3870"/>
+  <text x="450" y="230" text-anchor="middle" font-size="9" fill="#FF9999" font-weight="bold">↑ veto feedback re-runs filter here with k_new  ·  |C_N| = ρ·V</text>
+
+  <line x1="450" y1="238" x2="450" y2="264" stroke="#2E5090" stroke-width="2" marker-end="url(#arr-blue)"/>
+  <text x="464" y="255" font-size="10" fill="#2E5090">filter ↓</text>
+
+  <!-- MIDDLE LAYER -->
+  <rect x="230" y="264" width="440" height="44" rx="8" fill="#3A6BC4"/>
+  <text x="450" y="284" text-anchor="middle" font-size="13" font-weight="bold" fill="white">Layer M_(N-1)</text>
+  <text x="450" y="300" text-anchor="middle" font-size="11" fill="#C8D8F4">Refines C_N → C_(N-1)   |C_(N-1)| = ρ·|C_N|</text>
+  <line x1="450" y1="308" x2="450" y2="334" stroke="#3A6BC4" stroke-width="2" marker-end="url(#arr-blue)"/>
+
+  <!-- Ellipsis -->
+  <text x="450" y="356" text-anchor="middle" font-size="22" fill="#3A6BC4" letter-spacing="8">· · ·</text>
+  <text x="450" y="374" text-anchor="middle" font-size="10" fill="#888" font-style="italic">N = log(V/K) / log(1/ρ) layers   [default: N=3, ρ=0.1, V=100k, K=100]</text>
+  <line x1="450" y1="380" x2="450" y2="406" stroke="#3A6BC4" stroke-width="2" marker-end="url(#arr-blue)"/>
+
+  <!-- LAYER M1 -->
+  <rect x="230" y="406" width="440" height="44" rx="8" fill="#4A85E8"/>
+  <text x="450" y="426" text-anchor="middle" font-size="13" font-weight="bold" fill="white">Layer M₁  (Final Filter)</text>
+  <text x="450" y="442" text-anchor="middle" font-size="11" fill="#C8D8F4">Produces C₁   |C₁| = K = 100 candidate tokens</text>
+  <line x1="450" y1="450" x2="450" y2="476" stroke="#4A85E8" stroke-width="2" marker-end="url(#arr-blue)"/>
+  <text x="464" y="467" font-size="10" fill="#4A85E8">evaluate ↓</text>
+
+  <!-- BASE MODEL M0 -->
+  <rect x="185" y="476" width="530" height="66" rx="8" fill="#1A3A5C" stroke="#4A85E8" stroke-width="2"/>
+  <text x="450" y="499" text-anchor="middle" font-size="14" font-weight="bold" fill="white">Base Model M₀</text>
+  <text x="450" y="516" text-anchor="middle" font-size="11" fill="#AAC4E8">Full-precision evaluation over C₁ only  (not full V)</text>
+  <text x="450" y="532" text-anchor="middle" font-size="10" fill="#7FA8D8">O(d·K) vs standard O(d·V)   →   64× projection reduction at defaults</text>
+  <line x1="450" y1="542" x2="450" y2="568" stroke="#555" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+  <!-- CONFIDENCE CHECK -->
+  <rect x="290" y="568" width="320" height="50" rx="6" fill="#F0F4FF" stroke="#2E5090" stroke-width="1.5"/>
+  <text x="450" y="586" text-anchor="middle" font-size="12" font-weight="bold" fill="#1F3864">Confidence Check</text>
+  <text x="450" y="601" text-anchor="middle" font-size="10.5" fill="#222">conf(C₁) = (max(softmax(z)) − 1/K) / (1 − 1/K)</text>
+  <text x="450" y="614" text-anchor="middle" font-size="9" fill="#888" font-style="italic">K-invariant · 0 = uniform uncertainty · 1 = fully certain</text>
+  <line x1="450" y1="618" x2="450" y2="640" stroke="#555" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+  <!-- DECISION DIAMOND -->
+  <polygon points="450,644 524,682 450,720 376,682" fill="#FFF8E7" stroke="#B8860B" stroke-width="2"/>
+  <text x="450" y="677" text-anchor="middle" font-size="12" font-weight="bold" fill="#7A5800">conf ≥ τ?</text>
+  <text x="450" y="693" text-anchor="middle" font-size="9" fill="#7A5800">τ = 1/K</text>
+
+  <!-- YES -->
+  <line x1="524" y1="682" x2="636" y2="682" stroke="#2E8B57" stroke-width="2" marker-end="url(#arr-green)"/>
+  <text x="578" y="674" text-anchor="middle" font-size="10" fill="#2E8B57" font-weight="bold">YES</text>
+  <rect x="636" y="657" width="210" height="50" rx="8" fill="#2E8B57"/>
+  <text x="741" y="677" text-anchor="middle" font-size="13" font-weight="bold" fill="white">Output Token</text>
+  <text x="741" y="694" text-anchor="middle" font-size="10" fill="#ADEFCA">t* = argmax M₀(C₁)</text>
+
+  <!-- NO -->
+  <line x1="450" y1="720" x2="450" y2="748" stroke="#C0392B" stroke-width="2" marker-end="url(#arr-red)"/>
+  <text x="466" y="738" font-size="10" fill="#C0392B" font-weight="bold">NO → VETO</text>
+
+  <!-- VETO BOX -->
+  <rect x="165" y="748" width="570" height="122" rx="8" fill="#FFF0EE" stroke="#C0392B" stroke-width="2"/>
+  <text x="450" y="768" text-anchor="middle" font-size="13" font-weight="bold" fill="#C0392B">Veto Mechanism</text>
+  <text x="450" y="785" text-anchor="middle" font-size="10" fill="#333">cohesion(C₁) = (2/K(K−1)) · Σᵢ﹤ⱼ sim(Eₜᵢ, Eₜⱼ)</text>
+
+  <!-- Branch A -->
+  <rect x="175" y="794" width="254" height="64" rx="5" fill="#FFE8E5" stroke="#C0392B" stroke-width="1"/>
+  <text x="302" y="810" text-anchor="middle" font-size="10" font-weight="bold" fill="#8B0000">cohesion ≥ δ  →  Key Update</text>
+  <text x="302" y="824" text-anchor="middle" font-size="9" fill="#333">t_best = argmax_{t∈C₁} zₜ</text>
+  <text x="302" y="838" text-anchor="middle" font-size="9" fill="#333">k_new = k + αᵢ·(E_tbest−k)/‖E_tbest−k‖</text>
+  <text x="302" y="851" text-anchor="middle" font-size="8" fill="#888">αᵢ = α₀·γⁱ  α₀=0.1‖k‖  γ=0.5  (Armijo 1966)</text>
+
+  <!-- Branch B -->
+  <rect x="441" y="794" width="284" height="64" rx="5" fill="#FFE8E5" stroke="#C0392B" stroke-width="1"/>
+  <text x="583" y="810" text-anchor="middle" font-size="10" font-weight="bold" fill="#8B0000">cohesion &lt; δ  →  Expand K</text>
+  <text x="583" y="824" text-anchor="middle" font-size="9" fill="#333">K_new = min(2K, K_max=1000)</text>
+  <text x="583" y="838" text-anchor="middle" font-size="9" fill="#333">If K &gt; K_max → full M₀ fallback</text>
+  <text x="583" y="851" text-anchor="middle" font-size="8" fill="#888">Worst case: 1.0× speedup, never slower than baseline</text>
+
+  <!-- FEEDBACK ARROW — terminates at filter-step label inside M_N -->
+  <path d="M 165 818 L 96 818 L 96 230 L 185 230"
+        fill="none" stroke="#C0392B" stroke-width="2.5" stroke-dasharray="7,4"
+        marker-end="url(#arr-red)"/>
+  <text x="84" y="545" text-anchor="middle" font-size="11" fill="#C0392B" font-weight="bold"
+        transform="rotate(-90 84 545)">k correction → re-filter V with k_new</text>
+
+  <!-- FALLBACK -->
+  <line x1="450" y1="870" x2="450" y2="904" stroke="#888" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr-gray)"/>
+  <rect x="265" y="904" width="370" height="42" rx="6" fill="#F0F0F0" stroke="#999" stroke-width="1.5"/>
+  <text x="450" y="922" text-anchor="middle" font-size="11" font-weight="bold" fill="#444">Fallback: Full M₀ over V</text>
+  <text x="450" y="938" text-anchor="middle" font-size="9" fill="#777">Triggered when K &gt; K_max. Correctness guaranteed. Speedup = 1.0×.</text>
+
+  <!-- LEGEND -->
+  <rect x="28" y="960" width="844" height="84" rx="6" fill="#EEF3FA" stroke="#CCCCCC" stroke-width="1"/>
+  <text x="450" y="978" text-anchor="middle" font-size="11" font-weight="bold" fill="#1F3864">Default Hyperparameters</text>
+  <text x="120"  y="996" text-anchor="middle" font-size="10" fill="#333">K = 100  (candidate set)</text>
+  <text x="280"  y="996" text-anchor="middle" font-size="10" fill="#333">ρ = 0.1  (reduction ratio)</text>
+  <text x="440"  y="996" text-anchor="middle" font-size="10" fill="#333">r = 256  (layer rank)</text>
+  <text x="600"  y="996" text-anchor="middle" font-size="10" fill="#333">λ = 0.1  (rarity weight, uniform)</text>
+  <text x="780"  y="996" text-anchor="middle" font-size="10" fill="#333">δ = 0.3  (cohesion gate)</text>
+  <text x="120" y="1016" text-anchor="middle" font-size="10" fill="#333">τ = 1/K  (veto threshold)</text>
+  <text x="300" y="1016" text-anchor="middle" font-size="10" fill="#333">γ = 0.5  (step decay, Armijo)</text>
+  <text x="500" y="1016" text-anchor="middle" font-size="10" fill="#333">K_max = 1000  (fallback trigger)</text>
+  <text x="720" y="1016" text-anchor="middle" font-size="10" fill="#333">N = log(V/K)/log(1/ρ) = 3</text>
+  <text x="450" y="1036" text-anchor="middle" font-size="9" fill="#888" font-style="italic">Rarity scores: precomputed from C4. Recompute if model training distribution differs significantly from C4.</text>
+</svg>
